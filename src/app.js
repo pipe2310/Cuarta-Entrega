@@ -10,7 +10,6 @@ const mongoose = require('mongoose');
 const Curso = require ('../models/curso')
 const Matricula = require ('../models/matricula')
 const Usuario = require ('../models/usuario')
-const Docente = require ('../models/docente')
 const bcrypt = require('bcrypt');
 const session = require('express-session')
 const sgMail = require('@sendgrid/mail')
@@ -27,7 +26,6 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 process.env.PORT = process.env.PORT || 3000;
 process.env.NODE_ENV = process.env.NODE_ENV || 'local';
-
 process.env.URLDB = process.env.URLDB ||  'mongodb://localhost:27017/EducacionContinua'
 
 app.use(express.static(directoriopublico));
@@ -49,6 +47,7 @@ app.use(session({
 }))
 
 app.use((req,res,next)=>{
+
   if(req.session.usuario){
   	res.locals.sesion = true
   	res.locals.nombre = req.session.nombre.toUpperCase();
@@ -62,8 +61,8 @@ app.use((req,res,next)=>{
   if(req.session.tipo=="Aspirante"){
   	res.locals.aspirante = true
   }
-  
 next()
+
 })
 
 app.set('view engine','hbs');
@@ -105,10 +104,21 @@ app.get('/contacto',(req,res)=>{
 	});
 });
 
-app.get('/imagen',(req,res)=>{
-	res.render('imagen',{
-		
-	});
+app.post('/envioemail',(req,res)=>{
+
+const msg = {
+ to: 'pipeospinav@gmail.com',
+ from: req.body.from,
+ subject: req.body.subject,
+ text: req.body.text
+};
+sgMail.send(msg);
+
+			res.render('envioemail',{
+				mensaje:'Enviado Satisfactoriamente'
+			});
+
+
 });
 
 app.post('/iniciodesesion',(req,res)=>{
@@ -170,6 +180,14 @@ let sww=false;
 		})
 	})
 });
+
+app.post('/salir',(req,res)=>{
+
+	req.session.destroy((err)=>{
+		if(err) return console.log(err)
+	})
+	res.redirect('/')
+})
 
 app.post('/usuario',(req,res)=>{
 	res.render('usuario',{
@@ -276,38 +294,48 @@ let lista;
 
 });
 
-app.get('/docente',(req,res)=>{
-	res.render('docente',{
-		
-	});
+app.get('/coordinador',(req,res)=>{
+
+	Curso.find({}).exec((err,respuesta)=>{//entre las llaves condicion ejemplo ingles: 5
+		if(err){
+			return console.log(err)
+		}
+		Matricula.find({}).exec((err,respuestaa)=>{//entre las llaves condicion ejemplo ingles: 5
+			if(err){
+				return console.log(err)
+			}
+			Usuario.find({}).exec((err,respuestaaa)=>{//entre las llaves condicion ejemplo ingles: 5
+				if(err){
+					return console.log(err)
+				}
+				if(req.session.tipo=="Coordinador"){
+					res.render('coordinador',{
+						listado:respuesta,
+						listadoo: respuestaa,
+						listadooo:respuestaaa
+					});
+				}else{
+					res.render('error',{
+					});	
+				}
+			})
+		})
+	})
+
 });
 
-app.post('/registrodocente',(req,res)=>{
+app.post('/actualizacionestado',(req,res)=>{
 
-	let docente= new Docente({
-		identificador: parseInt(req.body.id),
-		nombre: req.body.nombre,
-		correo: req.body.correo,
-		telefono: parseInt(req.body.telefono),
-		nivelacademico: req.body.nivelacademico,
-		titulouniversitario: req.body.titulouniversitario
-	})
-	docente.save((err,resultado)=>{
+	Curso.findOneAndUpdate({identificador:req.body.id},{$set: {estado:req.body.estado}},{new: true},(err,resultados)=>{
 		if(err){
-			return res.render('registrodocente',{
-			mostrardocente: 'El documento de identidad ingresado se ha registrado previamente'
-			})
+			return console.log(err)
 		}
-		if(!resultado){
-			res.render('registrodocente',{
-			mostrardocente: 'El documento de identidad ingresado se ha registrado previamente'
-			})
-					}
-					else{
-		res.render('registrodocente',{
-			mostrardocente:'El documento de identidad '+ resultado.identificador +' se ha registrado correctamente'//or resultado.nombre etc
-		})
-}
+		/*if(!usuario){
+			return res.redirect('/')
+		}*/
+		res.render('actualizacionestado',{
+			mostraractualizar:	"Estado del curso "+resultados.nombre+" actualizado correctamente"
+		});
 	})
 
 });
@@ -385,51 +413,73 @@ app.post('/eliminacioninscripcion',(req,res)=>{
 
 });
 
+app.get('/usuarios',(req,res)=>{
 
-app.get('/coordinador',(req,res)=>{
 
-	Curso.find({}).exec((err,respuesta)=>{//entre las llaves condicion ejemplo ingles: 5
-		if(err){
-			return console.log(err)
-		}
-		Matricula.find({}).exec((err,respuestaa)=>{//entre las llaves condicion ejemplo ingles: 5
-			if(err){
-				return console.log(err)
-			}
-			Usuario.find({}).exec((err,respuestaaa)=>{//entre las llaves condicion ejemplo ingles: 5
+			Usuario.find({}).exec((err,respuesta)=>{//entre las llaves condicion ejemplo ingles: 5
 				if(err){
 					return console.log(err)
 				}
 				if(req.session.tipo=="Coordinador"){
-					res.render('coordinador',{
+					res.render('usuarios',{
 						listado:respuesta,
-						listadoo: respuestaa,
-						listadooo:respuestaaa
 					});
 				}else{
 					res.render('error',{
 					});	
 				}
 			})
-		})
-	})
+
+
 
 });
 
-app.post('/actualizacionestado',(req,res)=>{
+app.post('/actualizacionusuario',(req,res)=>{
 
-	Curso.findOneAndUpdate({identificador:req.body.id},{$set: {estado:req.body.estado}},{new: true},(err,resultados)=>{
+
+			Usuario.findOne({identificador: parseInt(req.body.identificador)}).exec((err,respuesta)=>{//entre las llaves condicion ejemplo ingles: 5
+				if(err){
+					return console.log(err)
+				}
+				if(req.session.tipo=="Coordinador"){
+					res.render('actualizacionusuario',{
+						documento: respuesta.identificador,
+						nombre:  respuesta.nombre,
+						correo: respuesta.correo,
+						telefono: respuesta.telefono,
+						tipo: respuesta.tipo
+
+					});
+				}else{
+					res.render('error',{
+					});	
+				}
+			})
+
+
+
+});
+
+app.post('/actualizacionusuarios',(req,res)=>{
+
+	Usuario.findOneAndUpdate({identificador:req.body.id},{$set: {nombre:req.body.nombre, correo: req.body.correo, telefono: req.body.telefono}},{new: true},(err,resultados)=>{
 		if(err){
 			return console.log(err)
 		}
 		/*if(!usuario){
 			return res.redirect('/')
 		}*/
-		res.render('actualizacionestado',{
-			mostraractualizar:	"Estado del curso "+resultados.nombre+" actualizado correctamente"
+		res.render('actualizacionusuarios',{
+			mostraractualizarusuarios:	"Datos del usuario "+resultados.nombre+" actualizados correctamente"
 		});
 	})
 
+});
+
+app.get('/imagen',(req,res)=>{
+	res.render('imagen',{
+		
+	});
 });
 
 var upload = multer({  })
@@ -552,103 +602,11 @@ app.get('/miscursos',(req,res)=>{
 
 });
 
-app.get('/usuarios',(req,res)=>{
-
-
-			Usuario.find({}).exec((err,respuesta)=>{//entre las llaves condicion ejemplo ingles: 5
-				if(err){
-					return console.log(err)
-				}
-				if(req.session.tipo=="Coordinador"){
-					res.render('usuarios',{
-						listado:respuesta,
-					});
-				}else{
-					res.render('error',{
-					});	
-				}
-			})
-
-
-
-});
-
-app.post('/actualizacionusuario',(req,res)=>{
-
-
-			Usuario.findOne({identificador: parseInt(req.body.identificador)}).exec((err,respuesta)=>{//entre las llaves condicion ejemplo ingles: 5
-				if(err){
-					return console.log(err)
-				}
-				if(req.session.tipo=="Coordinador"){
-					res.render('actualizacionusuario',{
-						documento: respuesta.identificador,
-						nombre:  respuesta.nombre,
-						correo: respuesta.correo,
-						telefono: respuesta.telefono,
-						tipo: respuesta.tipo
-
-					});
-				}else{
-					res.render('error',{
-					});	
-				}
-			})
-
-
-
-});
-
-app.post('/actualizacionusuarios',(req,res)=>{
-
-	Usuario.findOneAndUpdate({identificador:req.body.id},{$set: {nombre:req.body.nombre, correo: req.body.correo, telefono: req.body.telefono}},{new: true},(err,resultados)=>{
-		if(err){
-			return console.log(err)
-		}
-		/*if(!usuario){
-			return res.redirect('/')
-		}*/
-		res.render('actualizacionusuarios',{
-			mostraractualizarusuarios:	"Datos del usuario "+resultados.nombre+" actualizados correctamente"
-		});
-	})
-
-});
-
-
-
-app.post('/envioemail',(req,res)=>{
-
-const msg = {
- to: 'pipeospinav@gmail.com',
- from: req.body.from,
- subject: req.body.subject,
- text: req.body.text
-};
-sgMail.send(msg);
-			res.render('envioemail',{
-				mensaje:'Enviado Satisfactoriamente'
-			});
-
-
-});
-
-
-
 app.get('*',(req,res)=>{
 	res.render('error',{
 		estudiante: 'error'
 	})
 })
-
-app.post('/salir',(req,res)=>{
-
-	req.session.destroy((err)=>{
-		if(err) return console.log(err)
-	})
-	res.redirect('/')
-})
-
 
 /*mongoose.connect('mongodb://localhost:27017/EducacionContinua',{useNewUrlParser: true},(err,resultado)=>{
 	if(err){
