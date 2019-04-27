@@ -1,0 +1,23 @@
+{{>header}}
+
+<center><h1>Formulario de contacto</h1></center>
+
+<div class="container">
+  <form action="/envioemail" method="post">
+    <div class="form-group">
+      <label for="from">De:</label>
+      <input type="email" class="form-control" name="from" required="true"> 
+    </div>
+    <div class="form-group">
+      <label for="subject">Asunto:</label>
+      <input type="text" class="form-control" name="subject" required="required">
+    </div>
+    <div class="form-group">
+      <label for="text">Texto:</label>
+      <textarea type="text" class="form-control" name="text" required="required"></textarea>
+    </div>
+    <center><button type="submit" class="btn btn-default">Enviar</button></center>
+  </form>
+</div>	
+
+{{>footer}}

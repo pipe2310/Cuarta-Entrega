@@ -1,0 +1,41 @@
+{{>header}}
+
+<center><h1>Registro de cursos</h1></center>
+
+<div class="container">
+  <form action="/registrocursos" method="post">
+    <div class="form-group">
+      <label for="id">Identificador Del Curso:</label>
+      <input type="number" class="form-control" name="id" required="required" placeholder="Ingrese el identificador del curso">
+    </div>
+    <div class="form-group">
+      <label for="nombre">Nombre:</label>
+      <input type="text" class="form-control" name="nombre" required="required" placeholder="Ingrese el nombre del curso">
+    </div>
+    <div class="form-group">
+      <label for="descripcion">Descripción:</label>
+      <textarea type="text" name="descripcion"  class="form-control" required="required" placeholder="Ingrese una breve descripción del curso"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="pwd">Valor:</label>
+      <input type="number" class="form-control" name="valor" required="required" placeholder="Ingrese el valor del curso">
+    </div>
+    <div class="form-group">
+      <label for="modalidad">Modalidad:</label>
+      <select name="modalidad" class="form-control" >  
+        <option value="">-</option> 
+        <option value="Virtual">Virtual</option> 
+        <option value="Presencial">Presencial</option> 
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="intensidad">Intensidad Horaria:</label>
+      <input type="number" class="form-control" name="intensidad" placeholder="Ingrese la intensidad horaria del curso">
+    </div>
+
+    <center><button type="submit" class="btn btn-default">Guardar</button></center>
+
+  </form>
+</div>	
+
+{{>footer}}

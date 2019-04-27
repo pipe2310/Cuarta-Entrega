@@ -1,0 +1,29 @@
+{{>header}}
+
+<center><h1>Ver cursos como coordinador</h1></center>
+<br>
+
+{{{mostrarr listado}}}
+
+<center><h1>Actualización estado del curso</h1></center>
+
+<div class="container">
+  <form action="/actualizacionestado" method="post">
+    <div class="form-group">
+      <label for="id">Curso</label>
+      <select name="id" class="form-control" required="true"> 
+         {{mostrarcursosnombre listado}}
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="estado">Estado:</label>
+      <select name="estado" class="form-control" >  
+        <option value="Cerrado">Cerrado</option> 
+        <option value="Disponible">Disponible</option> 
+      </select>
+    </div>
+    <center><button type="submit" class="btn btn-default">Actualizar</button></center>
+  </form>
+</div>	
+
+{{>footer}}

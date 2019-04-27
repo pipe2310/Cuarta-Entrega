@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<title>Cursos</title>
+  	<link href="css/style.css" rel="stylesheet" type="text/css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit-no">
+    <link rel="stylesheet" href="/css/bootstrap.min.css" type="text/css">
+  </head>
+
+  <body>
+    <div class="container-fluid">
+      <header>
+    	 <center><h1>Cursos Educación Continua</h1></center>
+      </header>
+    </div>
+    </div> 
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="#">Menu</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+          <li class="nav-item active">
+            <a class="nav-link" href="/">Inicio <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item active">
+
+          {{#if coordinador}}
+            <a class="nav-link" href="/cursos">Crear curso <span class="sr-only">(current)</span></a>
+          </li>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/coordinador">Ver Cursos</a>
+          </li>
+          <!---<li class="nav-item active">
+            <a class="nav-link" href="/docente">Registrar Docente</a>
+          </li>-->
+          <li class="nav-item active">
+            <a class="nav-link" href="/inscripciones">Inscripciones<span class="sr-only">(current)</span></a>
+          </li>
+         <li class="nav-item active">
+            <a class="nav-link" href="/usuarios">Usuarios<span class="sr-only">(current)</span></a>
+          </li>
+
+          {{/if}}
+
+          {{#if aspirante}}
+          <li class="nav-item active">
+            <a class="nav-link" href="/matricula">Matricula</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/miscursos">Mis cursos</a>
+          </li>
+          {{/if}} 
+
+          {{#if sesion}}
+
+          <!---<li class="nav-item">
+            <a class="nav-link" href="/aspirante">Aspirante</a>
+          </li>---> 
+        </ul>
+        <div>
+
+        <a href="/imagen"><img src="data:img/png;base64,{{avatar}}" height="50px" width="50px" class="rounded-circle"></a>
+
+        </div>
+        <form class="form-horizontal" action="/salir" method="post">
+          {{nombre}}<button type="submit" class="btn btn-default">Salir</button>
+        </form>
+     </div>
+        {{else}}
+          <li class="nav-item active">
+            <a class="nav-link" href="/interesado">Ver cursos <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/iniciochat">Chat <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/contacto">Contacto <span class="sr-only">(current)</span></a>
+          </li>
+        </ul>
+        <form class="form-horizontal" action="/iniciodesesion" method="post">
+         <button type="submit" class="btn btn-default">Ingresar</button>
+        </form>
+        <form class="form-horizontal" action="/usuario" method="post">
+          <button type="submit" class="btn btn-default">Registro</button>
+        </form>
+        {{/if}}
+    </nav>

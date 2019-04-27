@@ -1,0 +1,46 @@
+{{>header}}
+
+
+
+
+<!---<h1>Sala de Chat</h1>
+<form id="formulario">
+	<input type="text" id="texto">
+	<button>Enviar</button>
+</form>
+<div id="chat">
+</div>
+<script src="socket.io/socket.io.js"></script>
+<script src="js/socket.js"></script>--->
+
+    <center><h1>Sala de Chat</h1></center> 
+    <div class="container"> 
+      <center><div id="chat" align="left" style="height:200px;width:480px;border:1px solid #ccc;font:16px/26px Georgia, Garamond, Serif;overflow:auto;">
+      </div></center>
+      <br>
+          <div class="container">
+   <center><form id="formulario">
+        <input type="text" id="texto" >
+      <button> Enviar </button>       
+    </form>  </center>  
+    </div> 
+    <center><h1>Mensajes Privados</h1></center> 
+    <center><div id="chatPrivado" align="left" style="height:200px;width:480px;border:1px solid #ccc;font:16px/26px Georgia, Garamond, Serif;overflow:auto;"></div></center>
+  </div>
+    <br>
+ 
+    <br>
+    <div class="container">
+   	
+   <center> <form id="formularioPrivado">
+        <input type="text" id="destinatario" placeholder="Destinatario">
+        <input type="text" id="textoPrivado" >
+      <button> Enviar Privado </button>       
+    </form> </center>
+    </div>   
+    <br>
+<script src="socket.io/socket.io.js"></script>
+<script src="js/socket.js"></script>
+
+{{>footer}}
+

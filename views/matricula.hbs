@@ -1,0 +1,25 @@
+{{>header}}
+
+<center><h1>Registro de matricula</h1></center>
+
+<div class="container">
+  <form action="/registromatricula" method="post">
+    <div class="form-group">
+      <label for="identificador">Curso:</label>
+      <select name="identificador" class="form-control" required="true"> 
+      {{mostrarcursosnombre2 listado}}
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="estado">Documento De Identidad:</label>
+      <input type="number" class="form-control" name="documento" required="required"  value="{{identificador}}" readonly="true">
+    </div>
+    <center><button type="submit" class="btn btn-default">Guardar</button></center>
+  </form>
+</div>	
+
+<br>
+
+{{mostrarcursosdisponiblesvermas2 listado}}
+
+{{>footer}}
