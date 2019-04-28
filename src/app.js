@@ -469,7 +469,7 @@ app.post('/actualizacionusuario',(req,res)=>{
 
 app.post('/actualizacionusuarios',(req,res)=>{
 
-	Usuario.findOneAndUpdate({identificador:req.body.id},{$set: {nombre:req.body.nombre, correo: req.body.correo, telefono: req.body.telefono}},{new: true},(err,resultados)=>{
+	Usuario.findOneAndUpdate({identificador:req.body.id},{$set: {nombre:req.body.nombre, correo: req.body.correo, telefono: req.body.telefono, tipo:req.body.tipo}},{new: true},(err,resultados)=>{
 		if(err){
 			return console.log(err)
 		}
